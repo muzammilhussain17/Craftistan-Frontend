@@ -24,6 +24,7 @@ export function Header() {
     const navigate = useNavigate();
     const location = useLocation();
     const [shopMenuOpen, setShopMenuOpen] = useState(false);
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
     // White text only on the home page hero (transparent header over dark image)
     // All other pages have light backgrounds — keep dark text there
@@ -35,6 +36,7 @@ export function Header() {
             navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
             setSearchQuery('');
             setMobileMenuOpen(false);
+            setMobileSearchOpen(false);
         }
     };
 
@@ -208,6 +210,18 @@ export function Header() {
                     {/* Notifications - only for logged in users */}
                     {user && <NotificationDropdown />}
 
+                    {/* Mobile Search Button */}
+                    <button
+                        onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+                        className={clsx(
+                            "md:hidden p-2.5 rounded-full transition-colors relative",
+                            useLightText ? "text-stone-200 hover:text-white hover:bg-white/10" : "text-stone-600 hover:text-stone-900 hover:bg-stone-100"
+                        )}
+                        aria-label="Search"
+                    >
+                        <Search className="w-5 h-5" />
+                    </button>
+
                     <Link to="/wishlist" className={clsx(
                         "p-2.5 rounded-full transition-colors relative",
                         useLightText ? "text-stone-200 hover:text-white hover:bg-white/10" : "text-stone-600 hover:text-stone-900 hover:bg-stone-100"
@@ -309,6 +323,23 @@ export function Header() {
             </div>
 
             <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
+
+            {/* Mobile Search Bar Dropdown */}
+            {mobileSearchOpen && (
+                <div className="md:hidden absolute top-full left-0 w-full bg-white border-b border-stone-200 p-4 shadow-soft animate-slide-down">
+                    <form onSubmit={handleSearch} className="relative w-full">
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder={t('searchPlaceholder')}
+                            className="w-full py-2.5 pl-10 pr-4 bg-stone-50 border border-stone-200 rounded-full text-sm focus:bg-white focus:border-ochre focus:ring-1 focus:ring-ochre outline-none"
+                            autoFocus
+                        />
+                        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+                    </form>
+                </div>
+            )}
 
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (

@@ -123,7 +123,7 @@ export function Checkout() {
     };
 
     const InputField = ({ label, name, type = 'text', placeholder, colSpan = false }) => (
-        <div className={colSpan ? 'col-span-2' : ''}>
+        <div className={colSpan ? 'md:col-span-2' : ''}>
             <label className="block text-sm font-medium text-stone-600 mb-1">{label}</label>
             <input
                 type={type}
