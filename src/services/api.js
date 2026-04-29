@@ -1,6 +1,9 @@
 // API Service for Craftistan Backend
-// Using relative path — Vite dev proxy forwards /api → http://localhost:8080/api
-const API_BASE_URL = '/api';
+// In production (Vercel): VITE_API_BASE_URL = https://your-backend.up.railway.app
+// In development: falls back to '/api' which the Vite proxy forwards to localhost:8080
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+    ? `${import.meta.env.VITE_API_BASE_URL}/api`
+    : '/api';
 
 // Helper to get auth headers
 const getAuthHeaders = () => {
