@@ -56,9 +56,12 @@ export function LoginModal({ isOpen, onClose }) {
             return;
         }
         setError('');
+        let credentialReceived = false; // prevents false "dismissed" error after success
+
         window.google.accounts.id.initialize({
             client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
             callback: async (response) => {
+                credentialReceived = true;
                 setLoading(true);
                 const result = await googleLogin(response.credential);
                 setLoading(false);
@@ -70,7 +73,8 @@ export function LoginModal({ isOpen, onClose }) {
             },
         });
         window.google.accounts.id.prompt((notification) => {
-            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+            // Only show error if the credential callback was never triggered
+            if (!credentialReceived && (notification.isNotDisplayed() || notification.isSkippedMoment())) {
                 setError('Google Sign-In was dismissed. Please try again or use email/password.');
             }
         });
