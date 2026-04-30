@@ -141,8 +141,9 @@ export function ChatWidget() {
     if (isCartOpen) return null;
 
     return (
-        <div className="chat-widget-container">
-            {/* Mobile backdrop — tap to close */}
+        <>
+            {/* Mobile backdrop — OUTSIDE container so z-index works correctly.
+                z-index 999 < container z-index 1000, so chat window is always on top */}
             {isOpen && (
                 <div
                     className="chat-mobile-backdrop"
@@ -151,12 +152,13 @@ export function ChatWidget() {
                 />
             )}
 
-            {/* Branded Chat Toggle Button */}
-            <button
-                className={clsx('cartoon-chat-btn', isOpen && 'hidden')}
-                onClick={() => setIsOpen(true)}
-                aria-label="Open chat"
-            >
+            <div className="chat-widget-container">
+                {/* Branded Chat Toggle Button */}
+                <button
+                    className={clsx('cartoon-chat-btn', isOpen && 'hidden')}
+                    onClick={() => setIsOpen(true)}
+                    aria-label="Open chat"
+                >
                 <div className="cartoon-speech-bubble">
                     Ask Craftistan AI ✦
                 </div>
@@ -338,6 +340,7 @@ export function ChatWidget() {
                     </button>
                 </div>
             </div>
-        </div>
+            </div>
+        </>
     );
 }
