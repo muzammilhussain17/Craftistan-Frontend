@@ -54,6 +54,16 @@ export function ChatWidget() {
         }
     }, [isOpen]);
 
+    // Lock body scroll on mobile when chat is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [isOpen]);
+
     const sendMessage = async (messageText = input) => {
         if (!messageText.trim() || isLoading) return;
 
@@ -132,6 +142,15 @@ export function ChatWidget() {
 
     return (
         <div className="chat-widget-container">
+            {/* Mobile backdrop — tap to close */}
+            {isOpen && (
+                <div
+                    className="chat-mobile-backdrop"
+                    onClick={() => setIsOpen(false)}
+                    aria-label="Close chat"
+                />
+            )}
+
             {/* Branded Chat Toggle Button */}
             <button
                 className={clsx('cartoon-chat-btn', isOpen && 'hidden')}
@@ -171,7 +190,7 @@ export function ChatWidget() {
             {/* Chat Window */}
             <div className={clsx('chat-window', isOpen && 'open')}>
                 {/* Header */}
-                <div className="chat-header">
+                <div className="chat-header" style={{ position: 'relative' }}>
                     <div className="chat-header-info">
                         <div className="chat-avatar">
                             <Sparkles size={20} />

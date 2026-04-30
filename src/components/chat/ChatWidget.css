@@ -470,23 +470,90 @@
     to { transform: rotate(360deg); }
 }
 
-/* Mobile Responsive */
-@media (max-width: 480px) {
+/* Mobile Responsive — Bottom Sheet */
+@media (max-width: 640px) {
     .chat-widget-container {
         bottom: 16px;
         right: 16px;
     }
 
-    .chat-window {
-        bottom: 0;
-        right: 0;
-        width: 100vw;
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
+    .chat-fab-icon {
+        width: 54px;
+        height: 54px;
     }
 
     .cartoon-speech-bubble {
+        display: none;
+    }
+
+    /* Bottom sheet: not full-screen, slides up from bottom */
+    .chat-window {
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        height: 88vh;
+        max-height: 88vh;
+        border-radius: 20px 20px 0 0;
+        transform-origin: bottom center;
+        transform: translateY(100%);
+        opacity: 1;
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Safe area for notched phones */
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .chat-window.open {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    /* Drag handle indicator */
+    .chat-header::before {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.35);
+        border-radius: 2px;
+    }
+
+    /* Bigger close btn on mobile — easier to tap */
+    .chat-close-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+    }
+
+    /* Bigger language btn on mobile */
+    .language-btn {
+        width: 44px;
+        height: 44px;
+    }
+
+    /* Backdrop overlay — shown when chat is open */
+    .chat-mobile-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(2px);
+        z-index: 999;
+        animation: fadeBackdrop 0.25s ease;
+    }
+
+    @keyframes fadeBackdrop {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+}
+
+@media (min-width: 641px) {
+    .chat-mobile-backdrop {
         display: none;
     }
 }

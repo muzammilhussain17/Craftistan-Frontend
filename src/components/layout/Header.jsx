@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, ShoppingBag, Heart, User, Menu, Globe, ChevronDown, Settings } from 'lucide-react';
+import { Search, ShoppingBag, Heart, User, Menu, Globe, ChevronDown, Settings, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import clsx from 'clsx';
 import { useLanguage } from '../../context/LanguageContext';
@@ -75,6 +75,16 @@ export function Header() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
+
+    // Lock body scroll when mobile menu is open
+    useEffect(() => {
+        if (mobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => { document.body.style.overflow = ''; };
+    }, [mobileMenuOpen]);
 
     return (
         <header
@@ -344,49 +354,144 @@ export function Header() {
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
                 <div className="fixed inset-0 z-[60] md:hidden">
-                    <div className="absolute inset-0 bg-stone-900/40 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)}></div>
-                    <div className="absolute ltr:right-0 rtl:left-0 top-0 bottom-0 w-[80%] max-w-sm bg-white shadow-2xl p-6 flex flex-col overflow-y-auto">
-                        <div className="flex items-center justify-between mb-8">
-                            <span className="text-xl font-serif font-bold text-stone-900">Menu</span>
-                            <button onClick={() => setMobileMenuOpen(false)} className="p-2 text-stone-400 hover:text-stone-600">
-                                <ChevronDown className="w-6 h-6 rotate-90" /> {/* Chevron as close icon alternative or just X */}
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm"
+                        onClick={() => setMobileMenuOpen(false)}
+                    />
+
+                    {/* Slide-in drawer */}
+                    <div className="absolute right-0 top-0 bottom-0 w-[82%] max-w-xs bg-white shadow-2xl flex flex-col">
+
+                        {/* Drawer Header */}
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-stone-100">
+                            <span className="text-lg font-serif font-bold text-stone-900">Craftistan.</span>
+                            <button
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="p-2 rounded-full hover:bg-stone-100 text-stone-500 transition-colors"
+                                aria-label="Close menu"
+                            >
+                                <X className="w-5 h-5" />
                             </button>
                         </div>
-                        <nav className="flex flex-col gap-4">
-                            {mobileNavLinks.map(link => (
-                                <a key={link.key} href={link.href} className="text-lg font-medium text-stone-600 py-2 border-b border-stone-100">{t(link.key)}</a>
-                            ))}
-                            <a href="/track-order" className="text-lg font-medium text-stone-600 py-2 border-b border-stone-100">{t('trackOrder')}</a>
-                            <a href="/shipping-returns" className="text-lg font-medium text-stone-600 py-2 border-b border-stone-100">{t('shippingReturns')}</a>
-                        </nav>
-                        {/* Mobile Search */}
-                        <form onSubmit={handleSearch} className="mt-6 relative">
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={t('searchPlaceholder')}
-                                className="w-full py-3 pl-10 pr-4 rounded-full text-sm bg-stone-100 border border-stone-200 text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-stone-300"
-                            />
-                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
-                        </form>
-                        <div className="mt-8 pt-8 border-t border-stone-100 space-y-4">
+
+                        {/* Scrollable content */}
+                        <div className="flex-1 overflow-y-auto">
+                            {/* User profile strip (if logged in) */}
+                            {user && (
+                                <div className="flex items-center gap-3 px-5 py-4 bg-stone-50 border-b border-stone-100">
+                                    <div className="w-10 h-10 rounded-full bg-stone-200 overflow-hidden flex-shrink-0">
+                                        {user.avatar
+                                            ? <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+                                            : <User className="w-5 h-5 m-2.5 text-stone-500" />}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <p className="font-semibold text-stone-900 truncate text-sm">{user.name}</p>
+                                        <p className="text-xs text-stone-400 truncate">{user.email}</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Navigation Links */}
+                            <nav className="px-3 py-3">
+                                {mobileNavLinks.map(link => (
+                                    <Link
+                                        key={link.key}
+                                        to={link.href}
+                                        onClick={() => setMobileMenuOpen(false)}
+                                        className="flex items-center px-3 py-3 text-sm font-medium text-stone-700 rounded-xl hover:bg-stone-50 hover:text-stone-900 transition-colors"
+                                    >
+                                        {t(link.key)}
+                                    </Link>
+                                ))}
+                                <Link
+                                    to="/track-order"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="flex items-center px-3 py-3 text-sm font-medium text-stone-700 rounded-xl hover:bg-stone-50 hover:text-stone-900 transition-colors"
+                                >
+                                    {t('trackOrder')}
+                                </Link>
+                                <Link
+                                    to="/shipping-returns"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="flex items-center px-3 py-3 text-sm font-medium text-stone-700 rounded-xl hover:bg-stone-50 hover:text-stone-900 transition-colors"
+                                >
+                                    {t('shippingReturns')}
+                                </Link>
+                            </nav>
+
+                            {/* Mobile Search */}
+                            <div className="px-4 pb-4">
+                                <form onSubmit={handleSearch} className="relative">
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder={t('searchPlaceholder')}
+                                        className="w-full py-2.5 pl-9 pr-4 rounded-xl text-sm bg-stone-100 border border-stone-200 text-stone-800 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-ochre/30 focus:border-ochre"
+                                    />
+                                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
+                                </form>
+                            </div>
+
+                            {/* Language Switcher */}
+                            <div className="px-4 pb-3">
+                                <p className="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2 px-1">Language</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {languages.map((lang) => (
+                                        <button
+                                            key={lang.code}
+                                            onClick={() => { setLanguage(lang.code); }}
+                                            className={clsx(
+                                                'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border',
+                                                currentLang === lang.code
+                                                    ? 'bg-ochre/10 border-ochre/40 text-ochre'
+                                                    : 'bg-stone-50 border-stone-200 text-stone-600 hover:bg-stone-100'
+                                            )}
+                                        >
+                                            {lang.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Fixed bottom: user actions */}
+                        <div className="border-t border-stone-100 px-4 py-4 space-y-2">
                             {user ? (
                                 <>
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="w-10 h-10 rounded-full bg-stone-200 overflow-hidden">
-                                            {user.avatar ? <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" /> : <User className="w-6 h-6 m-2 text-stone-500" />}
-                                        </div>
-                                        <div>
-                                            <p className="font-medium text-stone-900">{user.name}</p>
-                                            <p className="text-sm text-stone-500">{user.email}</p>
-                                        </div>
-                                    </div>
-                                    <button onClick={() => { navigate(user.role === 'ADMIN' ? '/admin' : user.role === 'ARTISAN' ? '/artisan' : '/buyer'); setMobileMenuOpen(false); }} className="w-full py-3 bg-stone-100 text-stone-900 rounded-lg font-medium">Dashboard</button>
-                                    <button onClick={() => { logout(); setMobileMenuOpen(false); navigate('/'); }} className="w-full py-3 text-red-600 font-medium">Sign Out</button>
+                                    <button
+                                        onClick={() => {
+                                            navigate(user.role === 'ADMIN' ? '/admin' : user.role === 'ARTISAN' ? '/artisan' : '/buyer');
+                                            setMobileMenuOpen(false);
+                                        }}
+                                        className="w-full py-2.5 bg-stone-900 text-white rounded-xl text-sm font-semibold hover:bg-stone-800 transition-colors"
+                                    >
+                                        Go to Dashboard
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            navigate('/profile');
+                                            setMobileMenuOpen(false);
+                                        }}
+                                        className="w-full py-2.5 bg-stone-100 text-stone-700 rounded-xl text-sm font-medium hover:bg-stone-200 transition-colors"
+                                    >
+                                        Profile & Settings
+                                    </button>
+                                    <button
+                                        onClick={() => { logout(); setMobileMenuOpen(false); navigate('/'); }}
+                                        className="w-full py-2.5 text-red-500 text-sm font-medium hover:bg-red-50 rounded-xl transition-colors"
+                                    >
+                                        Sign Out
+                                    </button>
                                 </>
                             ) : (
-                                <button onClick={() => { setLoginOpen(true); setMobileMenuOpen(false); }} className="w-full py-3 bg-stone-900 text-white rounded-lg font-medium shadow-md">Sign In / Sign Up</button>
+                                <button
+                                    onClick={() => { setLoginOpen(true); setMobileMenuOpen(false); }}
+                                    className="w-full py-3 bg-stone-900 text-white rounded-xl text-sm font-semibold shadow-sm hover:bg-stone-800 transition-colors"
+                                >
+                                    Sign In / Sign Up
+                                </button>
                             )}
                         </div>
                     </div>
