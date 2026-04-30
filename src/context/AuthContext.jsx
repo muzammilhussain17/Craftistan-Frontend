@@ -121,12 +121,51 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    const googleLogin = async () => {
-        // Google OAuth - to be implemented with OAuth2
+    // Called with the GIS credential (ID token) after user picks their Google account
+    const googleLogin = async (credential, role = 'BUYER') => {
         setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setIsLoading(false);
-        return { success: false, error: 'Google login not yet implemented. Please use email/password.' };
+        try {
+            const result = await authApi.googleAuth(credential, role);
+
+            if (result.success && result.data) {
+                const responseData = result.data;
+
+                if (responseData.success === false) {
+                    setIsLoading(false);
+                    return { success: false, error: responseData.message || 'Google sign-in failed' };
+                }
+
+                const userData = responseData.user;
+                const accessToken = responseData.accessToken;
+
+                if (!userData || !accessToken) {
+                    setIsLoading(false);
+                    return { success: false, error: 'Invalid response from server' };
+                }
+
+                const userInfo = {
+                    id: userData.id,
+                    name: userData.name,
+                    email: userData.email,
+                    role: userData.role,
+                    avatar: userData.avatar,
+                };
+
+                setUser(userInfo);
+                setToken(accessToken);
+                localStorage.setItem('craftistan_user', JSON.stringify(userInfo));
+                localStorage.setItem('craftistan_token', accessToken);
+
+                setIsLoading(false);
+                return { success: true };
+            } else {
+                setIsLoading(false);
+                return { success: false, error: result.error || 'Google sign-in failed' };
+            }
+        } catch (error) {
+            setIsLoading(false);
+            return { success: false, error: error.message || 'Network error. Please try again.' };
+        }
     };
 
     const logout = () => {

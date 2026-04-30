@@ -50,11 +50,30 @@ export function LoginModal({ isOpen, onClose }) {
         }
     };
 
-    const handleGoogle = async () => {
-        setLoading(true);
-        await googleLogin();
-        setLoading(false);
-        onClose();
+    const handleGoogle = () => {
+        if (!window.google) {
+            setError('Google Sign-In failed to load. Please refresh the page.');
+            return;
+        }
+        setError('');
+        window.google.accounts.id.initialize({
+            client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            callback: async (response) => {
+                setLoading(true);
+                const result = await googleLogin(response.credential);
+                setLoading(false);
+                if (result.success) {
+                    onClose();
+                } else {
+                    setError(result.error || 'Google sign-in failed. Please try again.');
+                }
+            },
+        });
+        window.google.accounts.id.prompt((notification) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                setError('Google Sign-In was dismissed. Please try again or use email/password.');
+            }
+        });
     };
 
     const modalContent = createPortal(
@@ -183,10 +202,6 @@ export function LoginModal({ isOpen, onClose }) {
                         </div>
                     </div>
 
-                    {/* Mock Auth Info */}
-                    <div className="bg-stone-50 p-4 text-xs text-center text-stone-400 border-t border-stone-100">
-                        Demo: Use <strong>buyer@example.com</strong> or <strong>artisan@example.com</strong> (password: password123)
-                    </div>
                 </motion.div>
             </div>
         </AnimatePresence>,

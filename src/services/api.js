@@ -51,6 +51,14 @@ export const authApi = {
         });
     },
 
+    // Send Google ID token to backend for verification & JWT issue
+    googleAuth: async (credential, role = 'BUYER') => {
+        return apiCall('/auth/google', {
+            method: 'POST',
+            body: JSON.stringify({ credential, role }),
+        });
+    },
+
     getCurrentUser: async () => {
         return apiCall('/auth/me');
     },
