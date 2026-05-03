@@ -12,7 +12,7 @@ export function BetaWelcomeModal() {
         // ensuring it shows on refresh
         if (location.pathname === '/') {
             const timer = setTimeout(() => {
-                setIsOpen(true);
+                setIsOpen(false);
             }, 1500);
             return () => clearTimeout(timer);
         }

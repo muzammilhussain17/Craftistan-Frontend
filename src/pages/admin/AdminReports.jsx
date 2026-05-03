@@ -47,13 +47,13 @@ export function AdminReports() {
 
     return (
         <AdminLayout>
-            <div className="p-8 max-w-5xl">
-                <div className="flex items-center justify-between mb-8">
+            <div className="p-4 md:p-8 max-w-5xl mx-auto">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                     <div>
                         <h1 className="text-2xl font-bold text-white">Reports & Disputes</h1>
                         <p className="text-gray-400 mt-1">Investigate and resolve platform disputes</p>
                     </div>
-                    <div className="flex gap-1 bg-gray-900 p-1 rounded-xl border border-gray-800">
+                    <div className="flex flex-wrap gap-1 bg-gray-900 p-1 rounded-xl border border-gray-800 w-full sm:w-auto">
                         {['OPEN', 'IN_PROGRESS', 'RESOLVED'].map(s => {
                             const count = reports.filter(r => r.status === s).length;
                             return (
@@ -79,9 +79,9 @@ export function AdminReports() {
                 ) : (
                     <div className="space-y-3">
                         {filtered.map(r => (
-                            <div key={r.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-5 hover:border-gray-700 transition-colors">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="flex items-start gap-4">
+                            <div key={r.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-4 md:p-5 hover:border-gray-700 transition-colors">
+                                <div className="flex flex-col md:flex-row items-start justify-between gap-4">
+                                    <div className="flex items-start gap-3 md:gap-4">
                                         <div className="p-2.5 bg-red-500/10 border border-red-500/30 rounded-xl mt-0.5 flex-shrink-0">
                                             <Flag size={16} className="text-red-400" />
                                         </div>
@@ -106,7 +106,7 @@ export function AdminReports() {
                                         </div>
                                     </div>
                                     {r.status !== 'RESOLVED' && (
-                                        <div className="flex gap-2 flex-shrink-0">
+                                        <div className="flex flex-wrap gap-2 flex-shrink-0 w-full md:w-auto">
                                             {r.status === 'OPEN' && (
                                                 <button
                                                     onClick={() => handleUpdateStatus(r.id, 'IN_PROGRESS')}

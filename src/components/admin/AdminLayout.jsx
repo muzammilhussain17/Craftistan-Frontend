@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import {
     LayoutDashboard, Users, Package, ShoppingCart,
-    Star, Flag, LogOut, ChevronRight, Shield
+    Star, Flag, LogOut, ChevronRight, Shield, Menu, X
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -17,6 +18,7 @@ export function AdminLayout({ children }) {
     const { logout, user } = useAuth();
     const location = useLocation();
     const navigate = useNavigate();
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const handleLogout = () => { logout(); navigate('/'); };
 
@@ -25,16 +27,29 @@ export function AdminLayout({ children }) {
         : location.pathname.startsWith(item.path);
 
     return (
-        <div className="min-h-screen bg-gray-950 flex">
+        <div className="min-h-screen bg-gray-950 flex relative">
+            {/* Mobile menu overlay */}
+            {isMobileMenuOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-64 bg-gray-900 border-r border-gray-800 flex flex-col">
+            <aside className={`fixed lg:static inset-y-0 left-0 z-50 w-64 bg-gray-900 border-r border-gray-800 flex flex-col transform transition-transform duration-300 ease-in-out lg:transform-none ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 {/* Logo */}
-                <div className="p-6 border-b border-gray-800">
-                    <Link to="/" className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-white">Craftistan</span>
-                        <span className="bg-amber-500 text-black text-xs font-bold px-2 py-0.5 rounded">ADMIN</span>
-                    </Link>
-                    <p className="text-xs text-gray-500 mt-1">Super Admin Panel</p>
+                <div className="p-6 border-b border-gray-800 flex justify-between items-center">
+                    <div>
+                        <Link to="/" className="flex items-center gap-2">
+                            <span className="text-xl font-bold text-white">Craftistan</span>
+                            <span className="bg-amber-500 text-black text-xs font-bold px-2 py-0.5 rounded">ADMIN</span>
+                        </Link>
+                        <p className="text-xs text-gray-500 mt-1">Super Admin Panel</p>
+                    </div>
+                    <button onClick={() => setIsMobileMenuOpen(false)} className="lg:hidden text-gray-400 hover:text-white">
+                        <X size={20} />
+                    </button>
                 </div>
 
                 {/* Admin info */}
@@ -85,7 +100,14 @@ export function AdminLayout({ children }) {
             </aside>
 
             {/* Main content */}
-            <main className="flex-1 overflow-auto">
+            <main className="flex-1 overflow-auto w-full lg:w-auto h-screen">
+                {/* Mobile header bar */}
+                <div className="lg:hidden p-4 border-b border-gray-800 bg-gray-900 flex items-center gap-3 sticky top-0 z-30">
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="text-gray-400 hover:text-white">
+                        <Menu size={24} />
+                    </button>
+                    <span className="text-lg font-bold text-white">Craftistan Admin</span>
+                </div>
                 {children}
             </main>
         </div>

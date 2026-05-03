@@ -53,13 +53,13 @@ export function AdminProducts() {
 
     return (
         <AdminLayout>
-            <div className="p-8 max-w-5xl">
-                <div className="flex items-center justify-between mb-8">
+            <div className="p-4 md:p-8 max-w-5xl mx-auto">
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
                     <div>
                         <h1 className="text-2xl font-bold text-white">Product Moderation</h1>
                         <p className="text-gray-400 mt-1">Approve or reject artisan product listings</p>
                     </div>
-                    <div className="flex gap-1 bg-gray-900 p-1 rounded-xl border border-gray-800">
+                    <div className="flex flex-wrap gap-1 bg-gray-900 p-1 rounded-xl border border-gray-800 w-full md:w-auto">
                         {['PENDING', 'APPROVED', 'REJECTED'].map(s => {
                             const count = products.filter(p => p.approvalStatus === s).length;
                             return (
@@ -86,26 +86,28 @@ export function AdminProducts() {
                 ) : (
                     <div className="space-y-3">
                         {filtered.map(p => (
-                            <div key={p.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex items-center gap-4 hover:border-gray-700 transition-colors">
-                                {/* Thumbnail */}
-                                <div className="w-16 h-16 rounded-xl bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                    {p.image
-                                        ? <img src={p.image} alt="" className="w-full h-full object-cover" />
-                                        : <Package size={24} className="text-gray-600" />
-                                    }
-                                </div>
-                                {/* Info */}
-                                <div className="flex-1 min-w-0">
+                            <div key={p.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-4 md:p-5 flex flex-col md:flex-row items-start md:items-center gap-4 hover:border-gray-700 transition-colors">
+                                <div className="flex gap-4 w-full md:w-auto md:flex-1 min-w-0">
+                                    {/* Thumbnail */}
+                                    <div className="w-16 h-16 rounded-xl bg-gray-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                        {p.image
+                                            ? <img src={p.image} alt="" className="w-full h-full object-cover" />
+                                            : <Package size={24} className="text-gray-600" />
+                                        }
+                                    </div>
+                                    {/* Info */}
+                                    <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap">
                                         <h3 className="font-semibold text-white">{p.name}</h3>
                                         <span className={`text-xs px-2 py-0.5 rounded-full border ${STATUS_BADGE[p.approvalStatus]}`}>{p.approvalStatus}</span>
                                         {p.isFeatured && <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-400 border border-purple-500/30">⭐ Featured</span>}
                                     </div>
                                     <p className="text-sm text-gray-400 mt-0.5">by <span className="text-gray-300">{p.artisanName}</span> · Rs. {p.price?.toLocaleString()} · {p.category}</p>
-                                    {p.adminNotes && <p className="text-xs text-red-400 mt-1 italic">Admin note: {p.adminNotes}</p>}
+                                        {p.adminNotes && <p className="text-xs text-red-400 mt-1 italic">Admin note: {p.adminNotes}</p>}
+                                    </div>
                                 </div>
                                 {/* Actions */}
-                                <div className="flex gap-2 flex-shrink-0">
+                                <div className="flex flex-wrap gap-2 flex-shrink-0 w-full md:w-auto md:justify-end">
                                     <button onClick={() => handleFeature(p.id)} title="Toggle Featured"
                                         className={`p-2 rounded-xl border transition-colors ${p.isFeatured ? 'border-purple-500 text-purple-400 bg-purple-500/10' : 'border-gray-700 text-gray-500 hover:border-purple-500 hover:text-purple-400'}`}
                                     ><Star size={15} /></button>

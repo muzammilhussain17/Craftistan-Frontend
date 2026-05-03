@@ -38,7 +38,7 @@ export function AdminArtisans() {
 
     return (
         <AdminLayout>
-            <div className="p-8 max-w-5xl">
+            <div className="p-4 md:p-8 max-w-5xl mx-auto">
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold text-white">Artisan Verification</h1>
                     <p className="text-gray-400 mt-1">Review artisan applications before they can list products publicly</p>
@@ -55,20 +55,22 @@ export function AdminArtisans() {
                 {/* Pending artisans */}
                 <div className="space-y-3">
                     {pending.map(a => (
-                        <div key={a.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-5 flex items-center gap-4 hover:border-gray-700 transition-colors">
-                            <div className="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
-                                <span className="text-amber-400 font-bold text-lg">{a.name[0]}</span>
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <h3 className="font-semibold text-white">{a.name}</h3>
-                                <p className="text-sm text-gray-400">{a.email} · {a.phone || 'No phone'}</p>
-                                <div className="flex gap-3 mt-1 text-xs text-gray-500">
-                                    {a.region && <span>📍 {a.region}</span>}
-                                    {a.craftSpecialty && <span>🎨 {a.craftSpecialty}</span>}
-                                    <span>Joined {new Date(a.createdAt).toLocaleDateString()}</span>
+                        <div key={a.id} className="bg-gray-900 border border-gray-800 rounded-2xl p-4 md:p-5 flex flex-col md:flex-row items-start md:items-center gap-4 hover:border-gray-700 transition-colors">
+                            <div className="flex gap-4 w-full md:w-auto md:flex-1 min-w-0">
+                                <div className="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center flex-shrink-0">
+                                    <span className="text-amber-400 font-bold text-lg">{a.name[0]}</span>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-semibold text-white">{a.name}</h3>
+                                    <p className="text-sm text-gray-400">{a.email} · {a.phone || 'No phone'}</p>
+                                    <div className="flex flex-wrap gap-2 md:gap-3 mt-1 text-xs text-gray-500">
+                                        {a.region && <span>📍 {a.region}</span>}
+                                        {a.craftSpecialty && <span>🎨 {a.craftSpecialty}</span>}
+                                        <span>Joined {new Date(a.createdAt).toLocaleDateString()}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="flex gap-2 flex-shrink-0">
+                            <div className="flex flex-wrap gap-2 flex-shrink-0 w-full md:w-auto md:justify-end">
                                 <button
                                     onClick={() => handleVerify(a.id, true)}
                                     className="flex items-center gap-1.5 px-4 py-2 bg-green-500/10 border border-green-500/30 text-green-400 rounded-xl text-sm hover:bg-green-500/20 transition-colors font-medium"

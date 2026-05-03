@@ -41,26 +41,26 @@ export function AdminUsers() {
 
     return (
         <AdminLayout>
-            <div className="p-8">
-                <div className="flex items-center justify-between mb-8">
+            <div className="p-4 md:p-8 max-w-7xl mx-auto">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
                     <div>
                         <h1 className="text-2xl font-bold text-white">User Management</h1>
                         <p className="text-gray-400 mt-1">{filtered.length} user{filtered.length !== 1 ? 's' : ''} found</p>
                     </div>
-                    <div className="flex gap-1 bg-gray-900 p-1 rounded-xl border border-gray-800">
+                    <div className="flex flex-wrap gap-1 bg-gray-900 p-1 rounded-xl border border-gray-800 w-full sm:w-auto">
                         {['', 'BUYER', 'ARTISAN'].map(r => (
                             <button
                                 key={r}
                                 onClick={() => setRoleFilter(r)}
-                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${roleFilter === r ? 'bg-amber-500 text-black shadow' : 'text-gray-400 hover:text-white'
+                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex-1 sm:flex-none ${roleFilter === r ? 'bg-amber-500 text-black shadow' : 'text-gray-400 hover:text-white'
                                     }`}
                             >{r || 'All'}</button>
                         ))}
                     </div>
                 </div>
 
-                <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-                    <table className="w-full">
+                <div className="bg-gray-900 border border-gray-800 rounded-2xl overflow-x-auto">
+                    <table className="w-full min-w-[700px]">
                         <thead>
                             <tr className="border-b border-gray-800 bg-gray-950/50">
                                 <th className="text-left px-5 py-3 text-xs text-gray-500 font-semibold uppercase tracking-wider">User</th>

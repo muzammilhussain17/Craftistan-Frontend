@@ -52,7 +52,7 @@ export function AdminDashboard() {
 
     return (
         <AdminLayout>
-            <div className="p-8 max-w-7xl">
+            <div className="p-4 md:p-8 max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold text-white">Dashboard Overview</h1>
