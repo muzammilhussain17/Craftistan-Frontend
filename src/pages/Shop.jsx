@@ -10,9 +10,19 @@ import clsx from 'clsx';
 
 // Resolve backend image paths — relative paths are proxied via Vite → localhost:8080
 const resolveImageUrl = (url) => {
-    if (!url) return 'https://via.placeholder.com/400';
-    if (url.startsWith('http://') || url.startsWith('https://')) return url;
-    // Relative path like /uploads/... — served via Vite proxy
+    if (!url) return 'https://via.placeholder.com/400?text=Craftistan';
+    
+    // If it's already a full URL (Cloudinary, etc.), return as is
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+        return url;
+    }
+    
+    // For relative paths starting with /api, it's proxied via Vite
+    if (url.startsWith('/api') || url.startsWith('api')) {
+        return url.startsWith('/') ? url : `/${url}`;
+    }
+
+    // Default: relative path from root
     return url.startsWith('/') ? url : `/${url}`;
 };
 
